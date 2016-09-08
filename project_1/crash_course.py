@@ -4,7 +4,7 @@
 
 Course: SSE 691
 Project: 1
-Student: dslipak
+Students: Thuy-Duong Thi Nguyen, Dmitriy Slipak
 
 Code from Chapter 2 of the "Data science from scratch" 
 converted to be compatible with Python 3 

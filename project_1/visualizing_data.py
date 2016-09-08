@@ -4,7 +4,7 @@
 
 Course: SSE 691
 Project: 1
-Student: dslipak
+Students: Thuy-Duong Thi Nguyen, Dmitriy Slipak
 
 This script contains set of functions to represent
 different charts as per chapter 3 from "Data science from scratch".
