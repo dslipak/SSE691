@@ -125,7 +125,7 @@ def create_retweets_chart(data):
   xs = range(len(x))
 
   plt.bar([x+0.1 for x in xs], y)
-  plt.title("@merceryou retweets in July 2016")
+  plt.title("retweets by @merceryou in July 2016")
   plt.ylabel("# of retweets")
   plt.xlabel("Day")
   plt.xticks([i+0.5 for i, _ in enumerate(xs)], x)
@@ -147,7 +147,7 @@ def create_tweets_histogram_chart(data):
   # List of all tweets from data source
   tw_list = [datetime.strptime(x["created_at"], 
     "%a %b %d %H:%M:%S %z %Y").time().strftime("%H") for x in data]
-  
+
   # Hourly buckets
   buckets = [(0, 6), (6, 12), (12, 18), (18, 24)]
   b_labels = ["00-06", "06-12", "12-18", "18-24"]
@@ -161,7 +161,7 @@ def create_tweets_histogram_chart(data):
   plt.bar([x+0.1 for x in histogram.keys()], histogram.values())
   plt.axis([0, len(buckets), 0, max(histogram.values())+10])
   plt.xticks([i+0.5 for i, _ in enumerate(buckets)], b_labels)
-  plt.title("Histogram of @merceryou tweets in 2016")
+  plt.title("Histogram of tweets by @merceryou in 2016")
   plt.ylabel("# of tweets")
   plt.xlabel("Hours")
 
@@ -226,6 +226,7 @@ def create_trends_chart(data):
   tw_list = [datetime.strptime(x["created_at"], 
     "%a %b %d %H:%M:%S %z %Y").date().strftime("%Y-%m-%d") for x in data]
   tw_total = Counter(tw_list)
+
   tweets = defaultdict(int)
 
   # Combine tweets by month into tweets list
@@ -260,6 +261,7 @@ def create_trends_chart(data):
         tweets[k] = v
 
   tweets = sorted(tweets.items())
+
   x, y = [t[0] for t in tweets], [t[1] for t in tweets]
   print(x)
   print(y)
@@ -341,14 +343,15 @@ def create_retweets_scatter_plot(data):
 #       
 # returns: None
 #
-def create_user_friends_chart(data, equal_axes=False):
+def create_user_friends_chart(data, equal_axis=False):
   # List of all tweets from data source
   tw_list = [(x["retweeted_status"]["user"]["screen_name"],
   x["retweeted_status"]["user"]["friends_count"]) for x in data if x["text"][0:3] == "RT " 
   and datetime.strptime(x["created_at"], 
   "%a %b %d %H:%M:%S %z %Y").date().strftime("%m") in ["03", "07", "09"]]
-
+  
   total_users = [Counter(tw_list)]
+
   names = [] # For list of screen_names
   friends = []
   total_retweets = []
@@ -359,7 +362,7 @@ def create_user_friends_chart(data, equal_axes=False):
       friends.append(k[1])
       total_retweets.append(v)
 
-  # Simulate number of retweets, since real numbers are too small
+  # Make total number of retweets close to retweets_count for demonstration purposes
   total_retweets = [x-10 for x in friends]
 
   plt.scatter([x+0.5 for x in total_retweets], friends)
@@ -368,7 +371,7 @@ def create_user_friends_chart(data, equal_axes=False):
     plt.annotate(label, xy=(retweets_count, friends_count), 
       xytext=(15, -5), textcoords="offset points")
 
-  if equal_axes == True:
+  if equal_axis == True:
     plt.axis("equal")
 
   plt.ylabel("# of friends")
@@ -377,14 +380,18 @@ def create_user_friends_chart(data, equal_axes=False):
 
   plt.show()
 
+# Standard boilerplate to call the main() function to begin
+# the program.
 if __name__ == "__main__":
   args = create_args()
+  # Retrieve tweets from data file
   tweets = get_tweets(args.source)
 
   if tweets is None:
     print("No tweets")
     sys.exit(1)
 
+  # Decode tweets into Python dictionary
   tweets = json.loads(tweets)
 
   if args.type == "tweets":
@@ -403,5 +410,5 @@ if __name__ == "__main__":
     create_retweets_scatter_plot(tweets)
   if args.type == "friends":
     create_user_friends_chart(tweets)
-  if args.type == "friends-equal-axes":
+  if args.type == "friends-equal-axis":
     create_user_friends_chart(tweets, True)
