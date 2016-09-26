@@ -7,7 +7,7 @@ Project: 3
 Student: Dmitriy Slipak
 
 This script creates set of satistics from Chapter 5 
-using pandas libray. 
+using Pandas libray. 
 
 '''
 
@@ -66,7 +66,7 @@ combined_list = [x for x in zip(dates_list, tweets_list, retweets_list)]
 # 
 df = pd.DataFrame(combined_list, columns=["date", "tweets", "retweets"]).sort_values(by=["tweets"]).reset_index(drop=True)
 print("\n", df, "\n")
-num_rows = int(df.size//3) # data frame size divided by number of columns
+num_rows = int(df.size//3) # size of data frame divided by number of columns
 
 # Tests
 # 
@@ -83,16 +83,16 @@ print("expected: median(tweets)", bs.median(tweets_list))
 print("result: median(tweets)", df["tweets"].median(), "\n")
 
 print("expected: quantile(tweets, 0.10)", bs.quantile(tweets_list, .10))
-print("result: quantile(tweets, 0.10)", int(df["tweets"].quantile(.10)), "\n")
+print("result: quantile(tweets, 0.10)", df["tweets"].quantile(.10, interpolation="lower"), "\n")
 
 print("expected: quantile(tweets, 0.25)", bs.quantile(tweets_list, .25))
-print("result: quantile(tweets, 0.25)", int(df["tweets"].quantile(.25)), "\n")
+print("result: quantile(tweets, 0.25)", df["tweets"].quantile(.25, interpolation="lower"), "\n")
 
-print("expected: quantile(tweets, 0.10)", bs.quantile(tweets_list, .75))
-print("result: quantile(tweets, 0.10)", int(df["tweets"].quantile(.75)), "\n")
+print("expected: quantile(tweets, 0.75)", bs.quantile(tweets_list, .75))
+print("result: quantile(tweets, 0.75)", df["tweets"].quantile(.75, interpolation="higher"), "\n")
 
-print("expected: quantile(tweets, 0.10)", bs.quantile(tweets_list, .90))
-print("result: quantile(tweets, 0.10)", int(df["tweets"].quantile(.90)), "\n")
+print("expected: quantile(tweets, 0.90)", bs.quantile(tweets_list, .90))
+print("result: quantile(tweets, 0.90)", df["tweets"].quantile(.90, interpolation="higher"), "\n")
 
 print("expected: mode(tweets)", bs.mode(tweets_list))
 print("result: mode(tweets)", [x for x in df["tweets"].mode()], "\n")
@@ -117,9 +117,9 @@ print("result: correlation(tweets, retweets)", "%.12f" % df["tweets"].corr(df["r
 
 print(df.describe(), "\n")
 
-df.plot.scatter(x="retweets", y="tweets", ylim=(0, df["tweets"].max()+(df["tweets"].max()/10)), xlim=(0, df["retweets"].max()+(df["retweets"].max()/10)))
+df.plot.scatter(x="retweets", y="tweets", ylim=(0, df["tweets"].max()+(df["tweets"].max()/10)), xlim=(0, df["retweets"].max()+(df["retweets"].max()/10)), title="Correlation between tweets and retweets (with outlier(s))")
 
-# Remove first outlier
+# Identify and remove first outlier
 newdf = df.copy()
 newdf["x-mean"] = abs(newdf["retweets"] - newdf["retweets"].mean())
 newdf["1.96*std"] = 1.96*newdf["retweets"].std()
@@ -129,17 +129,17 @@ print(newdf, "\n")
 df = newdf[newdf.outlier != True]
 #print(df, "\n")
 
-df.plot.scatter(x="retweets", y="tweets", ylim=(0, df["tweets"].max()+(df["tweets"].max()/10)), xlim=(0, df["retweets"].max()+(df["retweets"].max()/10)))
+df.plot.scatter(x="retweets", y="tweets", ylim=(0, df["tweets"].max()+(df["tweets"].max()/10)), xlim=(0, df["retweets"].max()+(df["retweets"].max()/10)), title="Correlation between tweets and retweets (with outlier(s))")
 
-# Remove second outlier
+# Identify and remove second outlier
 newdf = df.copy()
 newdf["x-mean"] = abs(newdf["retweets"] - newdf["retweets"].mean())
 newdf["1.96*std"] = 1.96*newdf["retweets"].std()
 newdf["outlier"] = abs(newdf["retweets"] - newdf["retweets"].mean()) > 1.96*newdf["retweets"].std()
-#print(newdf, "\n")
+print(newdf, "\n")
 
 df = newdf[newdf.outlier != True]
-#print(df, "\n")
+print(df, "\n")
 
-df.plot.scatter(x="retweets", y="tweets", ylim=(0, df["tweets"].max()+(df["tweets"].max()/10)), xlim=(0, df["retweets"].max()+(df["retweets"].max()/10)))
-#plt.show()
+df.plot.scatter(x="retweets", y="tweets", ylim=(0, df["tweets"].max()+(df["tweets"].max()/10)), xlim=(0, df["retweets"].max()+(df["retweets"].max()/10)), title="Correlation between tweets and retweets (without outlier(s))")
+plt.show()
