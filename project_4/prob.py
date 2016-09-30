@@ -31,8 +31,8 @@ def normal_pdf(x, mu=0, sigma=1):
 def normal_cdf(x, mu=0, sigma=1):
   return stats.norm.cdf(x, mu, sigma)
 
-def inverse_normal_cdf(x):
-  return stats.norm.ppf(x)
+def inverse_normal_cdf(x, mu=0, sigma=1):
+  return stats.norm.ppf(x, mu, sigma)
 
 def plot_normal_pdfs(plt):
   xs = [x / 10.0 for x in np.arange(-50, 50)]
@@ -50,6 +50,29 @@ def plot_normal_cdfs(plt):
   plt.plot(xs,[normal_cdf(x, sigma=0.5) for x in xs], ':', label='mu=0,sigma=0.5')
   plt.plot(xs,[normal_cdf(x, mu=-1) for x in xs], '-.' , label='mu=-1,sigma=1')
   plt.legend(loc=4) # bottom right
+  plt.show()
+
+def plot_inverse_normal_cdfs(plt):
+  xs = [x / 10.0 for x in np.arange(-50, 50)]
+  plt.plot(xs,[inverse_normal_cdf(x, sigma=1) for x in xs], '-', label='mu=0,sigma=1')
+  plt.plot(xs,[inverse_normal_cdf(x, sigma=2) for x in xs], '--', label='mu=0,sigma=2')
+  plt.plot(xs,[inverse_normal_cdf(x, sigma=0.5) for x in xs], ':', label='mu=0,sigma=0.5')
+  plt.plot(xs,[inverse_normal_cdf(x, mu=-1) for x in xs], '-.' , label='mu=-1,sigma=1')
+  plt.legend(loc=4) # bottom right
+  plt.show()
+
+def plot_uniform_pdf():
+  xs = np.arange(-1.0, 2.5, step=1/2)
+  plt.plot(xs, [uniform_pdf(x) for x in xs], '-')
+  plt.yticks(xs)
+  plt.title("The niform pdf")
+  plt.show()
+
+def plot_uniform_cdf():
+  xs = np.arange(-1.0, 2.5, step=1/2)
+  plt.plot(xs, [uniform_cdf(x) for x in xs], '-')
+  plt.yticks(xs)
+  plt.title("The uniform cdf")
   plt.show()
 
 def binomial(p, n):
@@ -99,15 +122,11 @@ def family_kids():
   print("P(both | older):", both_girls / older_girl)
   print("P(both | either): ", both_girls / either_girl)
 
-def test_disease():
-  samples = 10000
-  data = stats.norm.rvs(size=samples)
-  res_mean, res_var, res_std = stats.bayes_mvs(data, alpha=0.99)
-  print(res_mean)
-  print(res_var)
-  print(res_std)
-
 if __name__ == "__main__":
-  plot_normal_pdfs(plt)
-  plot_normal_cdfs(plt)
-  make_hist(0.75, 100, 10000)  
+  #family_kids()
+  #plot_uniform_pdf()
+  #plot_uniform_cdf()
+  #plot_normal_pdfs(plt)
+  #plot_normal_cdfs(plt)
+  #plot_inverse_normal_cdfs(plt)
+  #make_hist(0.75, 100, 10000)
